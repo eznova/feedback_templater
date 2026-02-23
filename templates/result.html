@@ -32,7 +32,7 @@
 			<table border="0" cellspacing="0" cellpadding="0" width="100%" style="max-width: 1095px;">
 			<tr><td align="center" valign="top" bgcolor="#ffffff" style="padding: 50px 10px;">
 				<table border="0" cellspacing="0" cellpadding="0" width="100%" style="max-width: 1024px; border-collapse: separate;">
-				<tr><td align="left" valign="top" style="padding: 34px 69px; border-radius: 20px; border-width: 3px; border-color: #844bec; border-style: solid;">
+				<tr><td align="left" valign="top" style="padding: 34px 69px; border-radius: 20px; border-width: 3px; border-color: #{{ main_color_dark }}; border-style: solid;">
 					<table border="0" cellspacing="0" cellpadding="0" width="100%">
 					<tr><td align="left" valign="top">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -42,7 +42,7 @@
   <div style="display: inline-block; vertical-align: top; margin-right: 10px;">
     <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
       <tr>
-        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#844bec; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
+        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#{{ main_color_dark }}; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
 			{{ meeting_name }}
         </td>
       </tr>
@@ -53,7 +53,7 @@
   <div style="display: inline-block; vertical-align: top; margin-right: 10px;">
     <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
       <tr>
-        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#ab83f5; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
+        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#{{ main_color_light }}; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
           дата встречи: {{ meeting_date }}
         </td>
       </tr>
@@ -64,7 +64,7 @@
   <div style="display: inline-block; vertical-align: top;">
     <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse;">
       <tr>
-        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#76B48F; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
+        <td align="center" valign="middle" style="font-size: 20px; line-height: 24px; color: #ffffff; background-color:#{{ risk_color }}; border-radius:30px; padding: 3px 15px; text-align:center; font-family:Inter, sans-serif;">
 			{{ risks }}
         </td>
       </tr>
@@ -105,7 +105,7 @@
 											<div>
 												<div>
 													<table border="0" cellspacing="0" cellpadding="0" width="100%">
-													<tr><td align="center" valign="middle" height="1" bgcolor="#844bec" style="height: 1px;">
+													<tr><td align="center" valign="middle" height="1" bgcolor="#{{ main_color_dark}}" style="height: 1px;">
 														<div></div>
 													</td></tr>
 													</table>
@@ -135,7 +135,7 @@
 											<div>
 												<div>
 													<table border="0" cellspacing="0" cellpadding="0" width="100%">
-													<tr><td align="center" valign="middle" height="1" bgcolor="#844bec" style="height: 1px;">
+													<tr><td align="center" valign="middle" height="1" bgcolor="#{{ main_color_dark }}" style="height: 1px;">
 														<div></div>
 													</td></tr>
 													</table>
@@ -181,12 +181,14 @@
 											</td></tr>
 											</table>
 										</div>
+										{% for motivators in motivators_list %}
 										<div style="height: 9px; line-height: 9px; font-size: 7px;">&nbsp;</div>
 										<div>
 											<div style="line-height: 24px;">
 												<span style="font-family: Inter, sans-serif; font-size: 20px; color: #3b3b3b;">{{ motivators }}</span>
 											</div>
 										</div>
+										{% endfor %}
 									</div>
 								</td></tr>
 								</table> 
@@ -204,7 +206,7 @@
 								<tr><td>
 								<![endif]--> 
 								<table border="0" cellspacing="0" cellpadding="0" width="100%" style="max-width: 283px; border-collapse: separate;">
-								<tr><td align="left" valign="middle" height="241" bgcolor="#e4d5ff" style="padding: 12px 23px; border-radius: 13px; height: 241px;">
+								<tr><td align="left" valign="middle" height="241" bgcolor="#{{ factors_bg_color }}" style="padding: 12px 23px; border-radius: 13px; height: 241px;">
 									<div>
 										<div>
 											<div style="line-height: 24px;">
@@ -266,12 +268,14 @@
 											<span style="font-family: Inter, sans-serif; font-weight: bold; font-size: 20px; color: #3c3c3c;">Области внимания</span>
 										</div>
 									</div>
+									{% for attention in attention_list %}
 									<div style="height: 9px; line-height: 9px; font-size: 7px;">&nbsp;</div>
 									<div>
 										<div style="line-height: 24px;">
 											<span style="font-family: Inter, sans-serif; font-size: 20px; color: #3b3b3b;">{{ attention }}</span>
 											</div>
 									</div>
+									{% endfor %}
 								</div>
 							</td></tr>
 							</table> 

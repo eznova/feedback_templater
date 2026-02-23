@@ -40,8 +40,13 @@
                         <!-- Название встречи -->
                         <div class="mb-4">
                             <label class="form-label">Название встречи</label>
-                            <input type="text" class="form-control form-control-lg"
-                                   name="meeting_name" required>
+                                <select class="form-select" name="meeting_name">
+                                    <option value="встреча 1 месяца">Встреча 1 месяца</option>
+                                    <option value="встреча 2 месяца">Встреча 2 месяца</option>
+                                    <option value="встреча 3 месяца">Встреча 3 месяца</option>
+                                    <option value="встреча 6 месяца">Встреча 6 месяца</option>
+                                    <option value="запрос">Запрос</option>
+                                </select>
                         </div>
 
                         <!-- Дата + Риски -->
@@ -58,8 +63,8 @@
                                     <option value="существенных рисков не выявлено">
                                         Существенных рисков не выявлено
                                     </option>
-                                    <option value="Средние">Средние</option>
-                                    <option value="Высокие">Высокие</option>
+                                    <option value="обрати внимание">Обрати внимание</option>
+                                    <option value="есть риски">Есть риски</option>
                                 </select>
                             </div>
                         </div>
