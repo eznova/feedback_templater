@@ -16,5 +16,5 @@ python3 app.py
 
 ### Pack to Windows application
 ```
-pyinstaller --onefile --add-data "templates;templates" app.py
+python3 -m PyInstaller --onefile --add-data "templates:templates" app.py
 ```
