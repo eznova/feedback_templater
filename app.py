@@ -8,7 +8,7 @@ def index():
     return render_template("form.html")
 
 
-@app.route("/generate", methods=["POST"])
+@app.route("/ft_generate", methods=["POST"])
 def generate():
     meeting_name=request.form.get("meeting_name")
     if meeting_name.lower() == "запрос":
@@ -86,4 +86,4 @@ def generate():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, host="0.0.0.0")

@@ -1,0 +1,15 @@
+services:
+  feedback_templater:
+    container_name: feedback_templater
+    image: feedback_templater
+    restart: always
+    environment:
+      SECRET_KEY: change-me-in-production
+    networks:
+      - moc
+    volumes:
+      - ./:/app
+networks:
+  moc:
+    external: true
+
