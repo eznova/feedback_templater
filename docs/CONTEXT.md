@@ -1,6 +1,6 @@
 # Краткий контекст проекта
 
-Обновлено: 2026-10-23 (Europe/Moscow), после подготовки REQ-0030.
+Обновлено: 2026-10-23 (Europe/Moscow), после REQ-0031.
 Детали истории — в [реестре требований](requirements/README.md).
 
 ## Назначение и файлы
@@ -144,7 +144,11 @@ Backup API + serialize в памяти, авторизация, no-store; рев
 Правила — [AGENTS.md](../AGENTS.md). Создана локальная ветка d/raci; коммит реализации d061956, автор/коммитер
 Имя в Git: eznova <e_znova@mail.ru>. Все 38 тестов прошли, включая stress PDF.
 Push origin d/raci отклонён GitHub: SSH-аутентификация как leshiy39 без прав записи
-в eznova/feedback_templater. gh/credential.helper не настроены, SSH-ключ один.
+в eznova/feedback_templater. gh/credential.helper не настроены.
+По REQ-0031 создан отдельный Ed25519 /root/moc/.ssh/id_ed25519_e_znova
+(публичный .pub), комментарий e_znova@mail.ru, каталог 700, приватный ключ 600.
+В локальном .git/config core.sshCommand использует этот ключ с IdentitiesOnly=yes.
+Пользователь добавляет публичный ключ в GitHub; ключи вне репозитория.
 Нужен доступ записи, затем git push -u origin d/raci; REQ-0030 остаётся в работе.
-Последнее выполненное требование: REQ-0029. Следующий ID: **REQ-0031**.
+Последнее выполненное требование: REQ-0031. Следующий ID: **REQ-0032**.
 Открытая задача — публикация d/raci по REQ-0030; REQ-0002 (5000) пока описывает нереализованный возврат порта.
