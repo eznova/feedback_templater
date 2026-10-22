@@ -1,0 +1,29 @@
+# Локальная среда и репозиторий
+.git
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+**/__pycache__
+**/*.py[cod]
+
+# Локальные данные, ключи и окружение
+instance
+.env
+.env.*
+.flaskenv
+*.log
+*.pid
+
+# Сборки и кэши
+build
+dist
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage*
+htmlcov
+.idea
+.vscode

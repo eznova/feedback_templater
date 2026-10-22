@@ -1,3 +1,46 @@
+# Виртуальные окружения
+.venv/
+venv/
+env/
+.env/
+
+# Байткод Python
+__pycache__/
+*.py[cod]
+
+# Сборки и метаданные пакетов
 app.spec
-build
-dist
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Кэши проверок и отчёты покрытия
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Локальная конфигурация и журналы
+.env
+.env.*
+!.env.example
+!.env.sample
+.flaskenv
+instance/
+*.log
+*.pid
+
+# Редакторы и файлы ОС
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

@@ -1,2 +1,3 @@
 flask
 pyinstaller
+reportlab>=4.0,<5

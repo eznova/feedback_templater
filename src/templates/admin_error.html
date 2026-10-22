@@ -1,0 +1,6 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<h1 class="h3">Изменения не сохранены</h1>
+<p role="alert">{{ message }}</p>
+<a href="{{ url_for('admin_editor') }}">Вернуться в панель администратора</a>
+{% endblock %}

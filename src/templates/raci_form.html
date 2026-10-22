@@ -1,0 +1,65 @@
+{% macro text_field(field_id, label='', heading_id='') %}
+<div class="mb-4">
+    {% if label %}
+    <label class="form-label" for="{{ field_id }}">{{ label }}</label>
+    {% endif %}
+    <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}"
+              {% if heading_id %}aria-labelledby="{{ heading_id }}"{% endif %}
+              rows="4">{{ raci_texts[field_id] }}</textarea>
+</div>
+{% endmacro %}
+
+{% macro section_heading(key, title, number) %}
+<h3 class="h5 mb-3" id="raci-{{ key }}-heading">
+    <label class="d-flex align-items-center justify-content-between gap-3" for="include-{{ key }}">
+        <span>{{ number }}. {{ title }}</span>
+        <input class="form-check-input flex-shrink-0 mt-0" type="checkbox"
+               id="include-{{ key }}" name="include_{{ key }}" value="1" {% if not raci_error or raci_values.get('include_' ~ key) == '1' %}checked{% endif %}
+               aria-label="Включить раздел «{{ title }}» в документ">
+    </label>
+</h3>
+{% endmacro %}
+
+<form id="raci-form" action="{{ url_for('generate_raci') }}" method="post" hidden>
+    <div class="mb-4">
+        <label class="form-label" for="raci-department">Название подразделения</label>
+        <input class="form-control" type="text" id="raci-department" name="department" required maxlength="200" value="{{ raci_values.get('department', '') if raci_values else '' }}">
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label" for="raci-audience">Для кого</label>
+        <select class="form-select" id="raci-audience" name="audience">
+            <option value="department-head" {% if not raci_values or raci_values.get('audience') == 'department-head' %}selected{% endif %}>Для руководителя отдела</option>
+            <option value="sector-head" {% if raci_values and raci_values.get('audience') == 'sector-head' %}selected{% endif %}>Для руководителя сектора</option>
+            <option value="hidden" {% if raci_values and raci_values.get('audience') == 'hidden' %}selected{% endif %}>Не отображать</option>
+        </select>
+    </div>
+
+    <section aria-labelledby="raci-about-heading">
+        {{ section_heading('about', 'О матрице RACI', 1) }}
+        {{ text_field('raci-about', heading_id='raci-about-heading') }}
+    </section>
+    <section aria-labelledby="raci-prerequisites-heading">
+        {{ section_heading('prerequisites', 'Предпосылки внедрения', 2) }}
+        {{ text_field('raci-prerequisites', heading_id='raci-prerequisites-heading') }}
+    </section>
+
+    {% for key, title in [
+        ('recruitment', 'Подбор'),
+        ('motivation', 'Мотивация'),
+        ('competencies', 'Оценка компетенций'),
+        ('culture', 'Корпоративная культура'),
+        ('hr-documents', 'Кадровый документооборот')
+    ] %}
+    <section aria-labelledby="raci-{{ key }}-heading">
+        {{ section_heading(key, title, loop.index + 2) }}
+        {{ text_field('raci-' ~ key ~ '-before', 'Как было') }}
+        {{ text_field('raci-' ~ key ~ '-target', 'Как будет в целевой картине') }}
+    </section>
+    {% endfor %}
+    <p id="raci-error" class="text-danger" role="alert" {% if not raci_error %}hidden{% endif %}>{{ raci_error }}</p>
+    <div class="d-grid gap-2 mt-4">
+        <button id="raci-report-submit" class="btn btn-primary btn-lg" type="submit" name="output" value="html">Сгенерировать отчет</button>
+        <button id="raci-submit" class="btn btn-outline-primary btn-lg" type="submit">Сгенерировать PDF</button>
+    </div>
+</form>

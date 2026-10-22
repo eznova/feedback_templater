@@ -1,0 +1,78 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+    <h1 class="h3 mb-0">Тексты матрицы RACI</h1>
+    <form method="post" action="{{ url_for('admin_logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-secondary" type="submit">Выйти</button>
+    </form>
+</div>
+<p class="text-muted">Эти тексты заполняют поля при открытии формы «Матрица RACI».</p>
+<p>Версия схемы БД: <strong>{{ db_version.schema }}</strong> ·
+    Ревизия данных: <strong>{{ db_version.revision }}</strong><br>
+    <small class="text-muted">Последняя запись: {{ db_version.updated_at }} (UTC)</small><br>
+    <small class="text-muted">Дата изменения файла БД:
+        <time datetime="{{ db_file.modified_at }}">{{ db_file.modified_display }}</time></small></p>
+<p><a class="btn btn-outline-secondary" href="{{ url_for('admin_download') }}">Скачать текущую БД</a></p>
+<details class="mb-4">
+    <summary>Резервные копии: {{ backups|length }} из {{ backup_limit }}</summary>
+    <div class="table-responsive mt-3">
+        <table class="table table-sm">
+            <thead><tr><th>Схема / ревизия</th><th>Дата изменения файла</th><th>Файл</th><th>Действия</th></tr></thead>
+            <tbody>
+            {% for backup in backups %}
+                <tr>
+                    <td>{{ backup.schema if backup.schema is not none else '—' }} /
+                        {{ backup.revision if backup.revision is not none else '—' }}</td>
+                    <td class="text-nowrap"><time datetime="{{ backup.modified_at }}">{{ backup.modified_display }}</time></td>
+                    <td class="text-break">{{ backup.name }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary mb-2"
+                           href="{{ url_for('admin_backup_download', filename=backup.name) }}">Скачать</a>
+                        <form method="post" action="{{ url_for('admin_backup_restore', filename=backup.name) }}"
+                              onsubmit="return confirm('Заменить текущие тексты этой версией? Перед восстановлением будет создана резервная копия. Логин и пароль сохранятся.');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="btn btn-sm btn-outline-primary" type="submit">Восстановить тексты</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">Резервных копий пока нет.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</details>
+{% if request.args.get('restored') == '1' %}
+<div class="alert alert-success" role="status">Тексты восстановлены из выбранной версии. Логин и пароль сохранены.</div>
+{% endif %}
+{% if request.args.get('imported') == '1' %}
+<div class="alert alert-success" role="status">Тексты импортированы. Логин и пароль администратора сохранены.</div>
+{% endif %}
+{% if import_error %}<div class="alert alert-danger" role="alert">{{ import_error }}</div>{% endif %}
+<section class="border rounded p-3 mb-4" aria-labelledby="import-heading">
+    <h2 class="h5" id="import-heading">Импорт текстов из базы</h2>
+    <p>Будут заменены все 12 начальных текстов RACI. Перед заменой автоматически создаётся резервная копия.
+        Учётная запись администратора сохраняется.</p>
+    <form method="post" action="{{ url_for('admin_import') }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="form-label" for="database-file">База SQLite (до 32 МиБ)</label>
+        <input class="form-control mb-3" type="file" id="database-file" name="database"
+               accept=".sqlite3,.sqlite,.db" required>
+        <button class="btn btn-outline-primary" type="submit">Импортировать и заменить тексты</button>
+    </form>
+</section>
+{% if request.args.get('saved') == '1' %}
+<div class="alert alert-success" role="status">Тексты сохранены.</div>
+{% endif %}
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for key, label, default in fields %}
+    <div class="mb-4">
+        <label class="form-label" for="{{ key }}">{{ label }}</label>
+        <textarea class="form-control" id="{{ key }}" name="{{ key }}" rows="4">{{ texts[key] }}</textarea>
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">Сохранить тексты</button>
+</form>
+{% endblock %}

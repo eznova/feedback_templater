@@ -2,12 +2,26 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Форма встречи</title>
+    <title>Выберите шаблон</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        :root {
+            --raci-accent-color: {{ raci_accent_color }};
+        }
+        #raci-form .form-check-input {
+            border-color: var(--raci-accent-color);
+        }
+        #raci-form .form-check-input:checked {
+            background-color: var(--raci-accent-color);
+            border-color: var(--raci-accent-color);
+        }
+        #raci-form .form-check-input:focus {
+            border-color: var(--raci-accent-color);
+            box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--raci-accent-color) 40%, transparent);
+        }
         body {
             background-color: #f4f6f9;
         }
@@ -30,12 +44,23 @@
 
             <div class="card shadow-lg border-0">
                 <div class="card-body p-5">
+                    <div class="text-end mb-3"><a href="{{ url_for('admin_editor') }}">Панель администратора</a></div>
 
                     <h2 class="mb-4 text-center fw-bold">
-                        Заполните данные встречи
+                        Выберите шаблон
                     </h2>
 
-                    <form action="/ft_generate" method="post">
+                    <div class="mb-4">
+                        <select class="form-select" id="template-select"
+                                aria-label="Шаблон" aria-controls="meeting-form raci-form">
+                            <option value="meetings" {% if not raci_error %}selected{% endif %}>Встречи</option>
+                            <option value="raci" {% if raci_error %}selected{% endif %}>Матрица RACI</option>
+                        </select>
+                    </div>
+
+                    {% include 'raci_form.html' %}
+
+                    <form id="meeting-form" action="/ft_generate" method="post">
 
                         <!-- Название встречи -->
                         <div class="mb-4">
@@ -128,5 +153,49 @@
     </div>
 </div>
 
+<script>
+    const templateSelect = document.getElementById('template-select');
+    const meetingForm = document.getElementById('meeting-form');
+    const raciForm = document.getElementById('raci-form');
+
+    function updateTemplate() {
+        const showMeetings = templateSelect.value === 'meetings';
+        meetingForm.hidden = !showMeetings;
+        raciForm.hidden = showMeetings;
+    }
+
+    templateSelect.addEventListener('change', updateTemplate);
+    raciForm.addEventListener('submit', async (event) => {
+        if (!event.submitter || event.submitter.id !== 'raci-submit') return;
+        event.preventDefault();
+        const error = document.getElementById('raci-error');
+        const button = document.getElementById('raci-submit');
+        error.hidden = true;
+        button.disabled = true;
+        button.textContent = 'Создаём PDF…';
+        try {
+            const response = await fetch(raciForm.action, {method: 'POST', body: new FormData(raciForm)});
+            if (!response.ok) {
+                const result = await response.json();
+                throw new Error(result.error || 'Не удалось создать PDF. Повторите попытку.');
+            }
+            const url = URL.createObjectURL(await response.blob());
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'raci.pdf';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+        } catch (failure) {
+            error.textContent = failure.message || 'Не удалось создать PDF. Повторите попытку.';
+            error.hidden = false;
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Сгенерировать PDF';
+        }
+    });
+    updateTemplate();
+</script>
 </body>
 </html>

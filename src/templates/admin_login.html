@@ -1,0 +1,19 @@
+{% extends 'admin_base.html' %}
+{% block title %}Вход администратора{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Вход администратора</h1>
+{% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="mb-3">
+        <label class="form-label" for="username">Логин</label>
+        <input class="form-control" id="username" name="username" autocomplete="username" required>
+    </div>
+    <div class="mb-4">
+        <label class="form-label" for="password">Пароль</label>
+        <input class="form-control" type="password" id="password" name="password"
+               autocomplete="current-password" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Войти</button>
+</form>
+{% endblock %}

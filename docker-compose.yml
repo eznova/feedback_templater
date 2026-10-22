@@ -3,12 +3,14 @@ services:
     container_name: feedback_templater
     image: feedback_templater
     restart: always
+    ports:
+      - "5081:18500"
     environment:
-      SECRET_KEY: change-me-in-production
+      - RACI_ACCENT_COLOR
     networks:
       - moc
     volumes:
-      - ./:/app
+      - ./instance:/app/instance
 networks:
   moc:
     external: true
