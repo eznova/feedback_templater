@@ -243,3 +243,9 @@ APP_COMMIT=$(git rev-parse --short=7 HEAD) docker compose up -d --build --force-
 ```
 
 Для ручной сборки: `docker build --build-arg APP_COMMIT=$(git rev-parse --short=7 HEAD) -t feedback_templater .`.
+
+Если `git pull` обновил сам скрипт, он перезапускает новую версию.
+Перед сборкой в логе показан хеш; после запуска скрипт проверяет совпадение
+`APP_COMMIT` контейнера с собираемым коммитом. Несовпадение — ошибка запуска.
+При обновлении со старого скрипта сначала выполните отдельно `git pull --ff-only`,
+затем `./scripts/build-and-run.sh`.
