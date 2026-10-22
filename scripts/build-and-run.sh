@@ -3,7 +3,7 @@ set -Eeuo pipefail
 umask 077
 
 usage() {
-    printf 'Использование: %s [--help]\nСобрать feedback_templater и запустить сервис через Docker Compose.\n' "$0"
+    printf 'Использование: %s [--help]\nОбновить текущую ветку (git pull --ff-only), собрать feedback_templater и запустить сервис через Docker Compose.\n' "$0"
 }
 
 if [[ "${1:-}" == '--help' || "${1:-}" == '-h' ]]; then
@@ -20,6 +20,13 @@ trap 'build_status=$?; printf "Сборка/запуск прерваны: ош�
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 project_dir="$(cd -- "$script_dir/.." && pwd)"
 cd -- "$project_dir"
+
+if ! command -v git >/dev/null 2>&1; then
+    printf 'Git не найден. Установите Git для обновления проекта.\n' >&2
+    exit 1
+fi
+printf 'Обновление текущей ветки проекта…\n'
+git pull --ff-only
 
 if ! command -v docker >/dev/null 2>&1; then
     printf 'Docker не найден. Установите Docker и плагин Docker Compose.\n' >&2
