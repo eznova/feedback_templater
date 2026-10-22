@@ -51,7 +51,20 @@ python3 -m venv .venv
 docker build -t feedback_templater:build-check .
 ```
 
-Для использования текущим Compose собрать тег `feedback_templater`:
+Compose содержит `build: .` и `image: feedback_templater`.
+Для обновления существующего сервиса после переключения на `d/raci`:
+
+```bash
+docker compose up -d --build --force-recreate feedback_templater
+```
+
+У старой версии Docker Compose команда начинается с `docker-compose`.
+Команда пересобирает образ из текущей ветки: запускается `src.app` на 18500,
+а сайт доступен на порту хоста 5081. Если в логах `app` на 5000,
+работает старый образ main: его нужно пересобрать, одного перезапуска недостаточно.
+Каталог `instance` при обновлении сохраняется.
+
+При необходимости отдельно собрать тег `feedback_templater`:
 
 ```bash
 docker build -t feedback_templater .
