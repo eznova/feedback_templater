@@ -6,10 +6,12 @@ from pathlib import Path
 from src.admin import init_admin, raci_texts
 from src.raci_pdf import build_raci_pdf, PdfValidationError, SECTIONS, validate_raci
 from src.settings import RACI_ACCENT_COLOR
+from src.version import commit_hash
 
 project_dir = Path(sys.executable).resolve().parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent.parent
 app = Flask(__name__, static_folder='assets', instance_path=str(project_dir / 'instance'))
 app.jinja_env.globals['raci_accent_color'] = RACI_ACCENT_COLOR
+app.jinja_env.globals['build_commit'] = commit_hash()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 init_admin(app)
 

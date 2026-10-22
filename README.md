@@ -55,7 +55,7 @@ upstream) либо сборки скрипт останавливается до
 docker build -t feedback_templater:build-check .
 ```
 
-Compose содержит `build: .` и `image: feedback_templater`.
+Compose содержит `build.context: .` и `image: feedback_templater`.
 Для обновления существующего сервиса после переключения на `d/raci`:
 
 ```bash
@@ -228,3 +228,18 @@ RACI_ACCENT_COLOR="#C8BAFF"
 также поставляются с приложением. Браузеру и запущенному приложению
 доступ в интернет не требуется; ресурсы включены в Docker-образ.
 Первичная установка зависимостей и сборка образа могут требовать интернет.
+
+## Версия запущенного приложения
+
+В футере HTML-страниц показаны первые 7 символов хеша коммита.
+Скрипт запуска определяет его после git pull и сохраняет в образе
+через build arg APP_COMMIT. При локальном запуске версия берётся из Git
+один раз при старте. Без метаданных — «неизвестен».
+
+При сборке напрямую через Compose передайте хеш:
+
+```bash
+APP_COMMIT=$(git rev-parse --short=7 HEAD) docker compose up -d --build --force-recreate
+```
+
+Для ручной сборки: `docker build --build-arg APP_COMMIT=$(git rev-parse --short=7 HEAD) -t feedback_templater .`.

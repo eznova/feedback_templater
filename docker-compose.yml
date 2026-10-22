@@ -1,7 +1,10 @@
 services:
   feedback_templater:
     container_name: feedback_templater
-    build: .
+    build:
+      context: .
+      args:
+        APP_COMMIT: ${APP_COMMIT:-unknown}
     image: feedback_templater
     restart: always
     ports:

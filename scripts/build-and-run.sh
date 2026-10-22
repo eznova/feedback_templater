@@ -27,6 +27,7 @@ if ! command -v git >/dev/null 2>&1; then
 fi
 printf 'Обновление текущей ветки проекта…\n'
 git pull --ff-only
+export APP_COMMIT="$(git rev-parse --short=7 HEAD)"
 
 if ! command -v docker >/dev/null 2>&1; then
     printf 'Docker не найден. Установите Docker и плагин Docker Compose.\n' >&2
@@ -37,7 +38,7 @@ docker info >/dev/null
 docker compose config --quiet
 
 printf 'Сборка образа feedback_templater…\n'
-docker build --tag feedback_templater .
+docker build --build-arg "APP_COMMIT=$APP_COMMIT" --tag feedback_templater .
 
 if ! docker network inspect moc >/dev/null 2>&1; then
     printf 'Создание сети moc…\n'
