@@ -1,0 +1,11 @@
+[Unit]
+Description=Check feedback_templater updates every 30 seconds
+
+[Timer]
+OnActiveSec=30s
+OnUnitInactiveSec=30s
+AccuracySec=1s
+Unit=feedback-templater-update.service
+
+[Install]
+WantedBy=timers.target

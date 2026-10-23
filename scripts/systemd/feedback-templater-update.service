@@ -1,0 +1,9 @@
+[Unit]
+Description=Update feedback_templater from Git and rebuild when changed
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/feedback_templater
+ExecStart=/bin/bash %h/feedback_templater/scripts/build-and-run.sh
+Environment=GIT_TERMINAL_PROMPT=0
+TimeoutStartSec=15min

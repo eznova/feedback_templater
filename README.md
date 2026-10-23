@@ -32,19 +32,23 @@ python3 -m venv .venv
 
 # Docker
 
-Сборка и запуск одной командой:
+Проверка обновлений одной командой:
 
 ```bash
 ./scripts/build-and-run.sh
 ```
 
 Скрипт работает из любого каталога: сначала выполняет `git pull --ff-only`
-в каталоге проекта для текущей ветки из её upstream, затем проверяет Docker/Compose, собирает образ,
-создаёт сеть `moc`, если её нет, и пересоздаёт сервис в фоне. Данные в `instance/`
+в каталоге проекта для текущей ветки из её upstream. Только при новых коммитах
+или незавершённом обновлении он собирает образ, создаёт сеть `moc`, если её нет,
+и пересоздаёт сервис в фоне. Без изменений Docker не вызывается. Данные в `instance/`
 сохраняются. При ошибке Git (включая конфликт, расхождение истории или отсутствие
 upstream) либо сборки скрипт останавливается до пересоздания контейнера.
 Локальные правки автоматически не сбрасываются. Нужны Git, доступ к remote
-и Docker daemon. Для d/raci upstream — origin/d/raci.
+и Docker daemon, а также `flock` (util-linux). Для d/raci upstream — origin/d/raci.
+Для первого запуска или принудительной пересборки: `./scripts/build-and-run.sh --force`.
+Если сборка или проверка версии не удалась, следующий запуск повторит попытку.
+Маркер обновления и блокировка хранятся в служебном каталоге Git.
 Скрипт использует Compose и `.env` проекта. Compose публикует порт `5081` хоста
 на порт `18500` контейнера: http://127.0.0.1:5081/
 (панель администратора — http://127.0.0.1:5081/admin).
@@ -249,3 +253,39 @@ APP_COMMIT=$(git rev-parse --short=7 HEAD) docker compose up -d --build --force-
 `APP_COMMIT` контейнера с собираемым коммитом. Несовпадение — ошибка запуска.
 При обновлении со старого скрипта сначала выполните отдельно `git pull --ff-only`,
 затем `./scripts/build-and-run.sh`.
+
+## Автообновление через systemd
+
+На хосте под пользователем, у которого настроены Git/SSH и доступ к Docker:
+
+```bash
+git pull --ff-only
+./scripts/build-and-run.sh --force
+./scripts/build-and-run.sh --install-systemd
+```
+
+Флаг установки создаёт пользовательские service/timer в
+`${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user`, записывает фактический путь
+проекта в drop-in, выполняет daemon-reload и enable --now таймера.
+Первый запуск — через 30 секунд; следующие — через 30 секунд после завершения
+предыдущего. Долгие сборки не перекрываются; ручной параллельный запуск
+пропускается благодаря flock. Проверка без изменений не перезапускает сервис.
+
+Для работы после выхода из SSH и старта без входа пользователя включите linger:
+
+```bash
+sudo loginctl enable-linger "$(id -un)"
+```
+
+Статус, журнал и отключение:
+
+```bash
+systemctl --user status feedback-templater-update.timer
+systemctl --user list-timers feedback-templater-update.timer
+journalctl --user -u feedback-templater-update.service -f
+systemctl --user disable --now feedback-templater-update.timer
+```
+
+Если каталог проекта перемещён, повторите `--install-systemd`.
+Установка требует работающего пользовательского менеджера systemd; внутри
+контейнера без systemd этот флаг завершится ошибкой до записи конфигурации.
