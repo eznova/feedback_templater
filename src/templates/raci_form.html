@@ -31,6 +31,7 @@
         <select class="form-select" id="raci-audience" name="audience">
             <option value="department-head" {% if not raci_values or raci_values.get('audience') == 'department-head' %}selected{% endif %}>Для руководителя отдела</option>
             <option value="sector-head" {% if raci_values and raci_values.get('audience') == 'sector-head' %}selected{% endif %}>Для руководителя сектора</option>
+            <option value="directorate-head" {% if raci_values and raci_values.get('audience') == 'directorate-head' %}selected{% endif %}>Для руководителя управления</option>
             <option value="hidden" {% if raci_values and raci_values.get('audience') == 'hidden' %}selected{% endif %}>Не отображать</option>
         </select>
     </div>

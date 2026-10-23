@@ -28,6 +28,7 @@ SECTIONS = [
 AUDIENCES = {
     'department-head': 'для руководителя отдела',
     'sector-head': 'для руководителя сектора',
+    'directorate-head': 'для руководителя управления',
     'hidden': '',
 }
 ACCENT = HexColor(RACI_ACCENT_COLOR)
